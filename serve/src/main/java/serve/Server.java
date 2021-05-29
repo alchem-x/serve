@@ -97,7 +97,11 @@ public class Server {
             Pattern.compile("\\.(?i)js$"), "text/javascript; charset=UTF-8",
             Pattern.compile("\\.(?i)css$"), "text/css; charset=UTF-8",
             Pattern.compile("\\.(?i)png$"), "image/png",
+            Pattern.compile("\\.(?i)gif$"), "image/gif",
+            Pattern.compile("\\.(?i)ico$"), "image/x-icon",
+            Pattern.compile("\\.(?i)webp$"), "image/webp",
             Pattern.compile("\\.(?i)jpe?g$"), "image/jpeg",
+            Pattern.compile("\\.(?i)mp4$"), "video/mp4",
             Pattern.compile("\\.(?i)svg$"), "image/svg+xml; charset=UTF-8"
     );
 
@@ -136,7 +140,19 @@ public class Server {
     }
 
     public static void main(String... args) {
+        var port = 8080;
+        if (args.length > 0) {
+            port = getPort(args[0], port);
+        }
         var server = new Server();
-        server.serve(8080);
+        server.serve(port);
+    }
+
+    private static int getPort(String portString, int port) {
+        try {
+            return Integer.parseInt(portString);
+        } catch (NumberFormatException ex) {
+            return port;
+        }
     }
 }

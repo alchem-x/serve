@@ -17,7 +17,7 @@ export JAVA_HOME=/path/to/GRAALVM_HOME
 ### Start Serving
 
 ```sh
-./app/build/libs/app
+./serve/build/libs/serve
 ```
 
 Visit http://localhost:8080/

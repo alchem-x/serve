@@ -34,5 +34,5 @@ task buildNative(type: Exec) {
 
     def javaHome = environment.get('JAVA_HOME')
     def nativeImage = javaHome + '/bin/native-image'
-    commandLine nativeImage, "-jar", "$buildDir/libs/app.jar", "$buildDir/libs/app"
+    commandLine nativeImage, "-jar", "$buildDir/libs/serve.jar", "$buildDir/libs/serve"
 }

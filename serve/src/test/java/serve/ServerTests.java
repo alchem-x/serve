@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ServerTest {
+class ServerTests {
 
     @Test
-    public void appHasAGreeting() {
+    public void test() {
         var serve = new Server();
         assertNotNull(serve);
     }

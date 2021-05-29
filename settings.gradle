@@ -1,2 +1,2 @@
 rootProject.name = 'serve'
-include('app')
+include('serve')
