@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static serve.ContentType.getContentType;
@@ -78,14 +79,17 @@ public class Server {
             }
 
             if (Files.notExists(filePath)) {
-                var body = getBytes("File Not Found");
-                os.write(getBytes("HTTP/1.1 404 Not Found\r\n"));
-                os.write(getBytes("Content-Length: " + body.length + "\r\n"));
-                os.write(getBytes("Content-Type: text/plain; charset=utf-8\r\n"));
-                os.write(getBytes("Server: Serve\r\n"));
-                os.write(getBytes("\r\n"));
-                os.write(body);
-                return;
+                try (var html404 = Server.class.getResourceAsStream("/404.html")) {
+                    var body = Objects.requireNonNull(html404).readAllBytes();
+                    System.out.println(new String(html404.readAllBytes(), StandardCharsets.UTF_8));
+                    os.write(getBytes("HTTP/1.1 404 Not Found\r\n"));
+                    os.write(getBytes("Content-Length: " + body.length + "\r\n"));
+                    os.write(getBytes("Content-Type: text/html; charset=utf-8\r\n"));
+                    os.write(getBytes("Server: Serve\r\n"));
+                    os.write(getBytes("\r\n"));
+                    os.write(body);
+                    return;
+                }
             }
             var fileSize = Files.size(filePath);
             os.write(getBytes("HTTP/1.1 200 OK\r\n"));

@@ -17,7 +17,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": 'serve.App'
+        attributes 'Main-Class': 'serve.App'
     }
 }
 
@@ -34,5 +34,5 @@ task buildNative(type: Exec) {
 
     def javaHome = environment.get('JAVA_HOME')
     def nativeImage = javaHome + '/bin/native-image'
-    commandLine nativeImage, "-jar", "$buildDir/libs/serve.jar", "$buildDir/libs/serve"
+    commandLine nativeImage, '-jar', "$buildDir/libs/serve.jar", "$buildDir/libs/serve"
 }
