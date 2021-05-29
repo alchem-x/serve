@@ -1,6 +1,6 @@
 # Serve
 
-Build A Sample File Server With GraalVM Native Image
+Build A Simple File Server With GraalVM Native Image
 
 ### Export Java Home
 
@@ -17,7 +17,7 @@ export JAVA_HOME=/path/to/GRAALVM_HOME
 ### Start Serving
 
 ```sh
-./serve/build/libs/serve
+./serve/build/libs/serve 8080
 ```
 
 Visit http://localhost:8080/

@@ -17,12 +17,12 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": 'serve.Server'
+        attributes "Main-Class": 'serve.App'
     }
 }
 
 application {
-    mainClass = 'serve.Server'
+    mainClass = 'serve.App'
 }
 
 tasks.named('test') {

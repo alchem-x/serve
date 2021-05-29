@@ -9,9 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
+
+import static serve.ContentType.getContentType;
 
 public class Server {
 
@@ -52,7 +52,14 @@ public class Server {
             }
             var h1 = headerList.get(0).split(" ");
             if (!"GET".equalsIgnoreCase(h1[0])) {
-                os.write("Unsupported Method".getBytes(StandardCharsets.UTF_8));
+                var body = getBytes("Unsupported Method");
+                os.write(getBytes("HTTP/1.1 400 Bad Request\r\n"));
+                os.write(getBytes("Content-Length: " + body.length + "\r\n"));
+                os.write(getBytes("Content-Type: text/plain; charset=utf-8\r\n"));
+                os.write(getBytes("Server: Serve\r\n"));
+                os.write(getBytes("\r\n"));
+                os.write(body);
+                return;
             }
             var path = h1[1].split("\\?")[0];
 
@@ -78,42 +85,19 @@ public class Server {
                 os.write(getBytes("Server: Serve\r\n"));
                 os.write(getBytes("\r\n"));
                 os.write(body);
-            } else {
-                var fileSize = Files.size(filePath);
-                os.write(getBytes("HTTP/1.1 200 OK\r\n"));
-                os.write(getBytes("Content-Length: " + fileSize + "\r\n"));
-                os.write(getBytes("Content-Type: " + getContentType(path) + "\r\n"));
-                os.write(getBytes("Server: Serve\r\n"));
-                os.write(getBytes("\r\n"));
-                Files.copy(filePath, os);
+                return;
             }
+            var fileSize = Files.size(filePath);
+            os.write(getBytes("HTTP/1.1 200 OK\r\n"));
+            os.write(getBytes("Content-Length: " + fileSize + "\r\n"));
+            os.write(getBytes("Content-Type: " + getContentType(path) + "\r\n"));
+            os.write(getBytes("Server: Serve\r\n"));
+            os.write(getBytes("\r\n"));
+            Files.copy(filePath, os);
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
     }
-
-    private static final Map<Pattern, String> CONTENT_TYPE_MAP = Map.of(
-            Pattern.compile("\\.(?i)html?$"), "text/html; charset=UTF-8",
-            Pattern.compile("\\.(?i)js$"), "text/javascript; charset=UTF-8",
-            Pattern.compile("\\.(?i)css$"), "text/css; charset=UTF-8",
-            Pattern.compile("\\.(?i)png$"), "image/png",
-            Pattern.compile("\\.(?i)gif$"), "image/gif",
-            Pattern.compile("\\.(?i)ico$"), "image/x-icon",
-            Pattern.compile("\\.(?i)webp$"), "image/webp",
-            Pattern.compile("\\.(?i)jpe?g$"), "image/jpeg",
-            Pattern.compile("\\.(?i)mp4$"), "video/mp4",
-            Pattern.compile("\\.(?i)svg$"), "image/svg+xml; charset=UTF-8"
-    );
-
-    private static @NotNull String getContentType(@NotNull String path) {
-        for (Map.Entry<Pattern, String> ps : CONTENT_TYPE_MAP.entrySet()) {
-            if (ps.getKey().asPredicate().test(path)) {
-                return ps.getValue();
-            }
-        }
-        return "application/octet‑stream";
-    }
-
 
     private static byte @NotNull [] getBytes(@NotNull String s) {
         return s.getBytes(StandardCharsets.UTF_8);
@@ -137,22 +121,5 @@ public class Server {
 
     private static void println(String s) {
         System.out.println(s);
-    }
-
-    public static void main(String... args) {
-        var port = 8080;
-        if (args.length > 0) {
-            port = getPort(args[0], port);
-        }
-        var server = new Server();
-        server.serve(port);
-    }
-
-    private static int getPort(String portString, int port) {
-        try {
-            return Integer.parseInt(portString);
-        } catch (NumberFormatException ex) {
-            return port;
-        }
     }
 }
