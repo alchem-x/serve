@@ -81,7 +81,6 @@ public class Server {
             if (Files.notExists(filePath)) {
                 try (var html404 = Server.class.getResourceAsStream("/404.html")) {
                     var body = Objects.requireNonNull(html404).readAllBytes();
-                    System.out.println(new String(html404.readAllBytes(), StandardCharsets.UTF_8));
                     os.write(getBytes("HTTP/1.1 404 Not Found\r\n"));
                     os.write(getBytes("Content-Length: " + body.length + "\r\n"));
                     os.write(getBytes("Content-Type: text/html; charset=utf-8\r\n"));
