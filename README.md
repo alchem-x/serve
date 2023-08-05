@@ -2,16 +2,16 @@
 
 Build A Simple File Server With GraalVM Native Image
 
-### Export Java Home
+### Export GraalVM Home
 
 ```sh
-export JAVA_HOME=/path/to/GRAALVM_HOME
+export GRAALVM_HOME=/path/to/GRAALVM_HOME
 ```
 
 ### Build Native Image
 
 ```sh
-./gradlew buildNative
+./gradlew :serve:nativeBuild
 ```
 
 ### Start Serving

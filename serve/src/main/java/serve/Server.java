@@ -43,12 +43,12 @@ public class Server {
             var headerList = new ArrayList<String>();
             String contentLine;
             while ((contentLine = br.readLine()) != null) {
-                if (contentLine.length() == 0) {
+                if (contentLine.isEmpty()) {
                     break;
                 }
                 headerList.add(contentLine);
             }
-            if (headerList.size() == 0) {
+            if (headerList.isEmpty()) {
                 return;
             }
             var h1 = headerList.get(0).split(" ");
